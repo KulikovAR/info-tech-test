@@ -49,6 +49,9 @@ class BookService
                 throw new \Exception('Failed to attach authors to book');
             }
         }
+
+        $notificationService = Yii::$app->get('notificationService');
+        $notificationService->notifyNewBook($book);
         
         return $book;
     }

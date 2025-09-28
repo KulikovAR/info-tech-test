@@ -3,49 +3,48 @@
 namespace common\services;
 
 use Yii;
-use yii\httpclient\Client;
 
 class SmsService
 {
     private $apiKey;
     private $apiUrl = 'https://smspilot.ru/api.php';
-    private $httpClient;
+    private $sender;
 
     public function __construct()
     {
-        $this->apiKey = Yii::$app->params['sms.apiKey'] ?? 'test123';
-        $this->httpClient = new Client();
+        $this->apiKey = Yii::$app->params['sms.apiKey'];
+        $this->sender = Yii::$app->params['sms.sender'];
     }
 
     public function sendSms(string $phone, string $message): bool
     {
         try {
-            $response = $this->httpClient->createRequest()
-                ->setMethod('GET')
-                ->setUrl($this->apiUrl)
-                ->setData([
-                    'send' => $message,
-                    'to' => $phone,
-                    'apikey' => $this->apiKey,
-                    'format' => 'json'
-                ])
-                ->send();
+            $url = $this->apiUrl
+                . '?send=' . urlencode($message)
+                . '&to=' . urlencode($phone)
+                . '&from=' . $this->sender
+                . '&apikey=' . $this->apiKey
+                . '&format=json';
 
-            if ($response->isOk) {
-                $data = $response->data;
-                return isset($data['send']) && $data['send'] === true;
+            $json = file_get_contents($url);
+            
+            if ($json === false) {
+                Yii::error('Failed to get response from SMS API');
+                return false;
             }
 
-            return false;
+            $response = json_decode($json);
+            
+            if (!isset($response->error)) {
+                Yii::info('SMS successfully sent, server_id=' . $response->send[0]->server_id);
+                return true;
+            } else {
+                Yii::error('SMS API error: ' . $response->error->description_ru);
+                return false;
+            }
         } catch (\Exception $e) {
             Yii::error('SMS sending failed: ' . $e->getMessage());
             return false;
         }
-    }
-
-    public function sendNewBookNotification(string $phone, string $authorName, string $bookTitle): bool
-    {
-        $message = "Новая книга от автора {$authorName}: {$bookTitle}";
-        return $this->sendSms($phone, $message);
     }
 }
