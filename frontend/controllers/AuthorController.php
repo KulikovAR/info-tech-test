@@ -94,7 +94,7 @@ class AuthorController extends Controller
             try {
                 $author = new Author();
                 $form->saveToAuthor($author);
-                $this->authorService->createAuthor($author->attributes);
+                $author = $this->authorService->createAuthor($author->attributes);
                 Yii::$app->session->setFlash('success', 'Автор успешно создан');
                 return $this->redirect(['view', 'id' => $author->id]);
             } catch (\Exception $e) {

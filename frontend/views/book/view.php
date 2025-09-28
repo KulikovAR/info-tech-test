@@ -12,7 +12,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="row">
         <div class="col-md-4">
-            <img src="<?= $book->getCoverImageUrl() ?>" class="img-fluid" alt="Обложка">
+            <?php if ($book->cover_image): ?>
+                <img src="<?= Yii::$app->get('fileService')->getImageUrl($book->cover_image) ?>" 
+                     class="img-fluid" alt="Обложка" style="max-width: 200px;">
+            <?php else: ?>
+                <div class="text-muted">Обложка не загружена</div>
+            <?php endif; ?>
         </div>
         <div class="col-md-8">
             <p><strong>Год выпуска:</strong> <?= $book->getFormattedYear() ?></p>

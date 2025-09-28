@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="book-create">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?php $activeForm = ActiveForm::begin(); ?>
+    <?php $activeForm = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $activeForm->field($form, 'title')->textInput(['maxlength' => true]) ?>
 
@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $activeForm->field($form, 'isbn')->textInput(['maxlength' => true]) ?>
 
-    <?= $activeForm->field($form, 'cover_image')->textInput(['maxlength' => true]) ?>
+    <?= $activeForm->field($form, 'cover_image')->fileInput() ?>
 
     <?php
     $authorsList = [];

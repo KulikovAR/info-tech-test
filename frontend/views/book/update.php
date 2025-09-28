@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = 'Редактировать';
 <div class="book-update">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?php $activeForm = ActiveForm::begin(); ?>
+    <?php $activeForm = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $activeForm->field($form, 'title')->textInput(['maxlength' => true]) ?>
 
@@ -22,7 +22,17 @@ $this->params['breadcrumbs'][] = 'Редактировать';
 
     <?= $activeForm->field($form, 'isbn')->textInput(['maxlength' => true]) ?>
 
-    <?= $activeForm->field($form, 'cover_image')->textInput(['maxlength' => true]) ?>
+    <?php if ($book->cover_image): ?>
+        <div class="form-group">
+            <label class="control-label">Текущая обложка:</label>
+            <div>
+                <img src="<?= Yii::$app->get('fileService')->getImageUrl($book->cover_image) ?>" 
+                     alt="Обложка" style="max-width: 200px; max-height: 300px;">
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?= $activeForm->field($form, 'cover_image')->fileInput() ?>
 
     <?php
     $authorsList = [];

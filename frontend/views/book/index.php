@@ -21,7 +21,15 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php foreach ($books as $book): ?>
             <div class="col-md-4 mb-4">
                 <div class="card">
-                    <img src="<?= $book->getCoverImageUrl() ?>" class="card-img-top" alt="Обложка" style="height: 200px; object-fit: cover;">
+                    <?php if ($book->cover_image): ?>
+                        <img src="<?= Yii::$app->get('fileService')->getImageUrl($book->cover_image) ?>" 
+                             class="card-img-top" alt="Обложка" style="height: 200px; object-fit: cover;">
+                    <?php else: ?>
+                        <div class="card-img-top d-flex align-items-center justify-content-center bg-light" 
+                             style="height: 200px;">
+                            <span class="text-muted">Нет обложки</span>
+                        </div>
+                    <?php endif; ?>
                     <div class="card-body">
                         <h5 class="card-title"><?= Html::encode($book->title) ?></h5>
                         <p class="card-text">

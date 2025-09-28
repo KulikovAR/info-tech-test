@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\decorators\AuthorDecorator;
 use common\decorators\BookDecorator;
 use common\models\Book;
+use common\services\FileService;
 use frontend\models\BookForm;
 use Yii;
 use yii\filters\AccessControl;
@@ -16,12 +17,14 @@ class BookController extends Controller
 {
     private $bookService;
     private $authorService;
+    private $fileService;
 
     public function init()
     {
         parent::init();
         $this->bookService = Yii::$app->get('bookService');
         $this->authorService = Yii::$app->get('authorService');
+        $this->fileService = Yii::$app->get('fileService');
     }
 
     public function behaviors()
@@ -99,7 +102,16 @@ class BookController extends Controller
             try {
                 $book = new Book();
                 $form->saveToBook($book);
-                $this->bookService->createBook($book->attributes, $form->authorIds);
+                
+                if ($form->hasNewCoverImage()) {
+                    $coverImageFile = $form->getCoverImageFile();
+                    $fileName = $this->fileService->uploadBookCover($coverImageFile);
+                    if ($fileName) {
+                        $book->cover_image = $fileName;
+                    }
+                }
+                
+                $book = $this->bookService->createBook($book->attributes, $form->authorIds);
                 Yii::$app->session->setFlash('success', 'Книга успешно создана');
                 return $this->redirect(['view', 'id' => $book->id]);
             } catch (\Exception $e) {
@@ -132,7 +144,17 @@ class BookController extends Controller
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
+                $oldCoverImage = $book->cover_image;
                 $form->saveToBook($book);
+                
+                if ($form->hasNewCoverImage()) {
+                    $coverImageFile = $form->getCoverImageFile();
+                    $fileName = $this->fileService->uploadBookCover($coverImageFile, $oldCoverImage);
+                    if ($fileName) {
+                        $book->cover_image = $fileName;
+                    }
+                }
+                
                 $this->bookService->updateBook($book, $book->attributes, $form->authorIds);
                 Yii::$app->session->setFlash('success', 'Книга успешно обновлена');
                 return $this->redirect(['view', 'id' => $book->id]);

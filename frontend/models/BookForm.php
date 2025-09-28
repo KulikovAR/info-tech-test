@@ -4,6 +4,7 @@ namespace frontend\models;
 
 use common\models\Book;
 use yii\base\Model;
+use yii\web\UploadedFile;
 
 class BookForm extends Model
 {
@@ -22,7 +23,7 @@ class BookForm extends Model
             [['year'], 'integer', 'min' => 1000, 'max' => date('Y') + 1],
             [['description'], 'string'],
             [['isbn'], 'string', 'max' => 20],
-            [['cover_image'], 'string', 'max' => 255],
+            [['cover_image'], 'file', 'extensions' => 'jpg, jpeg, png, gif, webp', 'maxSize' => 5 * 1024 * 1024],
             [['authorIds'], 'each', 'rule' => ['integer']],
             [['authorIds'], 'required', 'message' => 'Необходимо выбрать хотя бы одного автора'],
         ];
@@ -57,5 +58,15 @@ class BookForm extends Model
         $book->description = $this->description;
         $book->isbn = $this->isbn;
         $book->cover_image = $this->cover_image;
+    }
+
+    public function getCoverImageFile(): ?UploadedFile
+    {
+        return UploadedFile::getInstance($this, 'cover_image');
+    }
+
+    public function hasNewCoverImage(): bool
+    {
+        return $this->getCoverImageFile() !== null;
     }
 }

@@ -2,6 +2,7 @@
 
 use common\services\AuthorService;
 use common\services\BookService;
+use common\services\FileService;
 use yii\caching\FileCache;
 
 return [
@@ -19,6 +20,9 @@ return [
         ],
         'bookService' => [
             'class' => BookService::class,
+        ],
+        'fileService' => [
+            'class' => FileService::class,
         ],
     ],
 ];

@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "book_authors".
  *
@@ -34,8 +32,8 @@ class BookAuthor extends \yii\db\ActiveRecord
             [['book_id', 'author_id'], 'required'],
             [['book_id', 'author_id'], 'integer'],
             [['book_id', 'author_id'], 'unique', 'targetAttribute' => ['book_id', 'author_id']],
-            [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => Authors::class, 'targetAttribute' => ['author_id' => 'id']],
-            [['book_id'], 'exist', 'skipOnError' => true, 'targetClass' => Books::class, 'targetAttribute' => ['book_id' => 'id']],
+            [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => Author::class, 'targetAttribute' => ['author_id' => 'id']],
+            [['book_id'], 'exist', 'skipOnError' => true, 'targetClass' => Book::class, 'targetAttribute' => ['book_id' => 'id']],
         ];
     }
 
@@ -57,7 +55,7 @@ class BookAuthor extends \yii\db\ActiveRecord
      */
     public function getAuthor()
     {
-        return $this->hasOne(Authors::class, ['id' => 'author_id']);
+        return $this->hasOne(Author::class, ['id' => 'author_id']);
     }
 
     /**
@@ -67,7 +65,7 @@ class BookAuthor extends \yii\db\ActiveRecord
      */
     public function getBook()
     {
-        return $this->hasOne(Books::class, ['id' => 'book_id']);
+        return $this->hasOne(Book::class, ['id' => 'book_id']);
     }
 
 }
