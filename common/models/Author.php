@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "authors".
@@ -16,7 +17,7 @@ use Yii;
  *
  * @property AuthorSubscriptions[] $authorSubscriptions
  * @property BookAuthors[] $bookAuthors
- * @property Books[] $books
+ * @property Book[] $books
  * @property User[] $users
  */
 class Author extends \yii\db\ActiveRecord
@@ -38,7 +39,7 @@ class Author extends \yii\db\ActiveRecord
     {
         return [
             [['middle_name'], 'default', 'value' => null],
-            [['first_name', 'last_name', 'created_at', 'updated_at'], 'required'],
+            [['first_name', 'last_name'], 'required'],
             [['created_at', 'updated_at'], 'integer'],
             [['first_name', 'last_name', 'middle_name'], 'string', 'max' => 100],
         ];
@@ -47,16 +48,28 @@ class Author extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
+
     public function attributeLabels()
     {
         return [
             'id' => 'ID',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'middle_name' => 'Middle Name',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'first_name' => 'Имя',
+            'last_name' => 'Фамилия',
+            'middle_name' => 'Отчество',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления',
         ];
+    }
+
+    public function getBooksCount()
+    {
+        return $this->getBooks()->count();
     }
 
     /**
@@ -86,7 +99,7 @@ class Author extends \yii\db\ActiveRecord
      */
     public function getBooks()
     {
-        return $this->hasMany(Books::class, ['id' => 'book_id'])->viaTable('book_authors', ['author_id' => 'id']);
+        return $this->hasMany(Book::class, ['id' => 'book_id'])->viaTable('book_authors', ['author_id' => 'id']);
     }
 
     /**

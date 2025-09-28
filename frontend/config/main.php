@@ -36,14 +36,25 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'books' => 'book/index',
+                'books/create' => 'book/create',
+                'books/<id:\d+>' => 'book/view',
+                'books/<id:\d+>/update' => 'book/update',
+                'books/<id:\d+>/delete' => 'book/delete',
+                'authors' => 'author/index',
+                'authors/create' => 'author/create',
+                'authors/<id:\d+>' => 'author/view',
+                'authors/<id:\d+>/update' => 'author/update',
+                'authors/<id:\d+>/delete' => 'author/delete',
+                'reports/top-authors' => 'report/top-authors',
+                'subscription/subscribe/<authorId:\d+>' => 'subscription/subscribe',
+                'subscription/unsubscribe/<authorId:\d+>' => 'subscription/unsubscribe',
             ],
         ],
-        */
     ],
     'params' => $params,
 ];

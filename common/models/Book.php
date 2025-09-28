@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "books".
@@ -16,7 +17,7 @@ use Yii;
  * @property int $created_at
  * @property int $updated_at
  *
- * @property Authors[] $authors
+ * @property Author[] $authors
  * @property BookAuthors[] $bookAuthors
  */
 class Book extends \yii\db\ActiveRecord
@@ -38,7 +39,7 @@ class Book extends \yii\db\ActiveRecord
     {
         return [
             [['description', 'isbn', 'cover_image'], 'default', 'value' => null],
-            [['title', 'year', 'created_at', 'updated_at'], 'required'],
+            [['title', 'year'], 'required'],
             [['year', 'created_at', 'updated_at'], 'integer'],
             [['description'], 'string'],
             [['title', 'cover_image'], 'string', 'max' => 255],
@@ -49,17 +50,24 @@ class Book extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
+
     public function attributeLabels()
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
-            'year' => 'Year',
-            'description' => 'Description',
-            'isbn' => 'Isbn',
-            'cover_image' => 'Cover Image',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'title' => 'Название',
+            'year' => 'Год выпуска',
+            'description' => 'Описание',
+            'isbn' => 'ISBN',
+            'cover_image' => 'Обложка',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления',
         ];
     }
 
@@ -70,7 +78,7 @@ class Book extends \yii\db\ActiveRecord
      */
     public function getAuthors()
     {
-        return $this->hasMany(Authors::class, ['id' => 'author_id'])->viaTable('book_authors', ['book_id' => 'id']);
+        return $this->hasMany(Author::class, ['id' => 'author_id'])->viaTable('book_authors', ['book_id' => 'id']);
     }
 
     /**
