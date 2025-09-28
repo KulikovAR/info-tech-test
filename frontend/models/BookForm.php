@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use common\models\Book;
+use common\validators\IsbnValidator;
 use yii\base\Model;
 use yii\web\UploadedFile;
 
@@ -23,6 +24,7 @@ class BookForm extends Model
             [['year'], 'integer', 'min' => 1000, 'max' => date('Y') + 1],
             [['description'], 'string'],
             [['isbn'], 'string', 'max' => 20],
+            [['isbn'], IsbnValidator::class],
             [['cover_image'], 'file', 'extensions' => 'jpg, jpeg, png, gif, webp', 'maxSize' => 5 * 1024 * 1024],
             [['authorIds'], 'each', 'rule' => ['integer']],
             [['authorIds'], 'required', 'message' => 'Необходимо выбрать хотя бы одного автора'],
